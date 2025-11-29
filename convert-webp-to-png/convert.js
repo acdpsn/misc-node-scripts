@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { open } from 'node:fs/promises';
 import sharp from "sharp";
 
 const main = async () => {
@@ -11,14 +10,11 @@ const main = async () => {
     })
   });
 
-  // console.log(files)
-
-  let fileHandle;
+  await fs.promises.mkdir("png");
 
   files.forEach(async file => {
     try {
-      // fileHandle = await open(`webp/${ file }`, 'r');
-      const name = trimExtension(file);
+      const name = trim(file);
       await sharp(`webp/${ file }`).toFile(`png/${ name }.png`);
     } catch (e) {
       console.log(`error reading file ${ file }: ${ e }`);
@@ -26,8 +22,9 @@ const main = async () => {
   });
 }
 
-const trimExtension = (fileName) => {
-  return fileName.replace(/\.[^/.]+$/, "");
+const trim = (fileName) => {
+  const name = fileName.replace(/\.[^/.]+$/, ""); // trim extension
+  return name.slice(3);
 }
 
 if (process.argv[1] === import.meta.filename) {
